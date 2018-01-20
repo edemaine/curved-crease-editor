@@ -2,8 +2,77 @@ svg = grid = null
 controlRadius = 0.2
 margin = 0.25
 
-getMode = ->
-  document.querySelector('.mode.selected').getAttribute 'id'
+round = Math.round
+
+currentMode = 'drag'
+getMode = -> currentMode
+  #document.querySelector('.mode.selected').getAttribute 'data-mode'
+setMode = (mode) ->
+  drawStop()
+  dragStop()
+  currentMode = mode
+  switch mode
+    when 'draw'
+      drawMode()
+    when 'drag'
+      dragMode()
+
+### DRAG MODE ###
+
+dragMode = ->
+  svg.on 'mouseup', dragEnd
+  svg.on 'mouseleave', dragEnd
+
+dragEnd = ->
+  svg.off 'mousemove'
+  svg.select '.dragging'
+  .removeClass 'dragging'
+
+dragStop = ->
+  svg.off 'mouseup'
+  svg.off 'mouseleave'
+
+### DRAW MODE ###
+
+nurbDraw = null
+
+drawNewNurb = ->
+  nurbDraw = new NurbCurve
+  nurbDraw.render svg
+  nurbDraw.a = [0,0]
+
+drawMode = ->
+  drawNewNurb()
+  svg.mousemove mousemove = (e) ->
+    return unless getMode() == 'draw'
+    point = svg.point e.clientX, e.clientY
+    control = nurbDraw.c ? nurbDraw.b ? nurbDraw.a
+    control[0] = round point.x
+    control[1] = round point.y
+    nurbDraw.update()
+    false
+  svg.mousedown (e) ->
+    e.preventDefault()
+    e.stopPropagation()
+    #mousemove e
+    ## Advance to next point
+    if not nurbDraw.b?
+      nurbDraw.b = [0,0]
+    else if not nurbDraw.c?
+      nurbDraw.c = [0,0]
+    else
+      nurbs.push nurbDraw
+      drawNewNurb()
+    false
+
+drawStop = ->
+  if nurbDraw?
+    nurbDraw.remove()
+    nurbDraw = null
+  svg.off 'mousemove'
+  svg.off 'mousedown'
+
+### NURBS ###
 
 class NurbCurve
   constructor: (opts = {}) ->
@@ -15,12 +84,13 @@ class NurbCurve
     c2 = 2*@w*t*(1-t)
     c3 = t*t
     denom = c1 + c2 + c3
-    (c1*@a[d] + c2*@b[d] + c3*@c[d])/denom for d in [0...@a.length]
+    (c1*@a[d] + c2*@b[d] + c3*(@c ? @b)[d])/denom for d in [0...@a.length]
   render: (svg) ->
     @svgPath = svg.polyline()
-    @svgControls = for p, i in [@a, @b, @c]
+    @svgControls = for p, i in ['a', 'b', 'c']
       do (p) =>
         circle = svg.circle()
+        .hide()
         .radius controlRadius
         .addClass 'control'
         .mousedown =>
@@ -28,16 +98,20 @@ class NurbCurve
           circle.addClass 'dragging'
           svg.mousemove (e) =>
             point = svg.point e.clientX, e.clientY
-            p[0] = point.x
-            p[1] = point.y
-            for d in [0...2]
-              p[d] = Math.round p[d]
+            @[p][0] = round point.x
+            @[p][1] = round point.y
             @update()
     @update()
   update: ->
-    @svgPath.plot (@sample (t/100) for t in [0..100])
     for p, i in [@a, @b, @c]
-      @svgControls[i].center p...
+      if p?
+        @svgControls[i].center p...
+        .show()
+    if @b?
+      @svgPath.plot (@sample (t/100) for t in [0..100])
+  remove: ->
+    @svgPath.remove()
+    control.remove() for control in @svgControls
 
 nurbs = [
   new NurbCurve
@@ -52,6 +126,8 @@ nurbs = [
     c: [2,1]
 ]
 
+### GRID ###
+
 class Grid
   constructor: (@svg) ->
     @group = @svg.group()
@@ -64,10 +140,7 @@ class Grid
       @group.line @xmin, y, @xmax, y
       .addClass 'grid'
 
-dragStop = ->
-  svg.off 'mousemove'
-  svg.select '.dragging'
-  .removeClass 'dragging'
+### GUI ###
 
 gui = ->
   svg = SVG 'canvas'
@@ -79,19 +152,13 @@ gui = ->
   svg.on 'selectstart', (e) ->
     e.preventDefault()
     e.stopPropagation()
-  ## Stop dragging
-  svg.on 'mouseup', dragStop
-  svg.on 'mouseleave', dragStop
 
   ## Mode selection
   for mode in document.getElementsByClassName 'mode'
     mode.addEventListener 'click', (e) ->
-      for other in document.getElementsByClassName 'selected'
-        other.classList.remove 'selected'
+      document.querySelector('.mode.selected').classList.remove 'selected'
       e.target.classList.add 'selected'
-
-  ## Draw mode
-  #svg.click 
+      setMode e.target.getAttribute 'data-mode'
 
   ## Render canvas
   grid = new Grid svg
