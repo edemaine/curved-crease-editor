@@ -4,6 +4,9 @@
 <script src="svg.min.js"></script>
 <script src="ccedit.js"></script>
 <style>
+  .mode { width: 100%; height: 50px; }
+  .mode.selected { background: orange; }
+
   polyline { fill: none; stroke: black; stroke-width: 0.1; stroke-linecap: round; }
   circle.control { fill: purple; stroke: none; }
   circle.control:hover { fill: magenta; }
@@ -13,8 +16,13 @@
 </head>
 <body>
 
-<div id="canvas" style="width: 90vw; height: 90vh">
-</div>
+<table style="width: 100%">
+  <tr>
+    <td>
+      <button id="drag" class="mode selected">drag</button>
+      <button id="draw" class="mode">draw</button>
+    <td id="canvas" style="width: 100%; height: 90vh">
+</table>
 
 </body>
 </html>

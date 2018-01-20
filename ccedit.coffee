@@ -2,6 +2,9 @@ svg = grid = null
 controlRadius = 0.2
 margin = 0.25
 
+getMode = ->
+  document.querySelector('.mode.selected').getAttribute 'id'
+
 class NurbCurve
   constructor: (opts = {}) ->
     ## `opt` should have keys among ['a', 'b', 'c', 'w']
@@ -21,6 +24,7 @@ class NurbCurve
         .radius controlRadius
         .addClass 'control'
         .mousedown =>
+          return unless getMode() == 'drag'
           circle.addClass 'dragging'
           svg.mousemove (e) =>
             point = svg.point e.clientX, e.clientY
@@ -67,6 +71,7 @@ dragStop = ->
 
 gui = ->
   svg = SVG 'canvas'
+
   ## Support dragging
   svg.on 'dragstart', (e) ->
     e.preventDefault()
@@ -78,6 +83,17 @@ gui = ->
   svg.on 'mouseup', dragStop
   svg.on 'mouseleave', dragStop
 
+  ## Mode selection
+  for mode in document.getElementsByClassName 'mode'
+    mode.addEventListener 'click', (e) ->
+      for other in document.getElementsByClassName 'selected'
+        other.classList.remove 'selected'
+      e.target.classList.add 'selected'
+
+  ## Draw mode
+  #svg.click 
+
+  ## Render canvas
   grid = new Grid svg
   grid.draw -5, -5, 5, 5
   for nurb in nurbs
