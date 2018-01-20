@@ -50,11 +50,8 @@ drawMode = ->
     control[0] = round point.x
     control[1] = round point.y
     nurbDraw.update()
-    false
   svg.mousedown (e) ->
-    e.preventDefault()
-    e.stopPropagation()
-    #mousemove e
+    mousemove e
     ## Advance to next point
     if not nurbDraw.b?
       nurbDraw.b = [0,0]
@@ -63,7 +60,6 @@ drawMode = ->
     else
       nurbs.push nurbDraw
       drawNewNurb()
-    false
 
 drawStop = ->
   if nurbDraw?
