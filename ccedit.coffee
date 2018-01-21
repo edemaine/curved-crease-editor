@@ -18,19 +18,26 @@ setMode = (mode) ->
     when 'drag'
       dragMode()
 
+nurbSelected = null
+deselect = ->
+  nurbSelected = null
+  svg.select '.selected'
+  .removeClass 'selected'
+nurbSelect = (nurb) ->
+  deselect()
+  nurbSelected = nurb
+  setWeight nurb.w
+
 currentWeight = 1
 getWeight = -> currentWeight
 setWeight = (weight) ->
   currentWeight = weight
   weightText.value = weight
   weightRange.value = weight
-  if nurbDraw?
-    nurbDraw.w = weight
-    nurbDraw.update()
-
-deselect = ->
-  svg.select '.selected'
-  .removeClass 'selected'
+  for nurb in [nurbDraw, nurbSelected]
+    if nurb?
+      nurb.w = weight
+      nurb.update()
 
 ### DRAG MODE ###
 
@@ -103,11 +110,10 @@ class NurbCurve
     .addClass 'extended'
     @svgPath = svg.polyline()
     .click =>
-      deselect()
+      nurbSelect @
       for component in [@svgPath].concat @svgControls
         component.addClass 'selected'
         component.front()
-      setWeight @w
     @svgControls = for p, i in ['a', 'b', 'c']
       do (p) =>
         circle = svg.circle()
