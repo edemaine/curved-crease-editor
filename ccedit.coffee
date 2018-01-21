@@ -162,6 +162,13 @@ gui = ->
       e.target.classList.add 'selected'
       setMode e.target.getAttribute 'data-mode'
 
+  ## Settings
+  document.getElementById('extended').addEventListener 'change', ->
+    if document.getElementById('extended').checked
+      svg.removeClass 'hideExtended'
+    else
+      svg.addClass 'hideExtended'
+
   ## Render canvas
   grid = new Grid svg
   grid.draw -5, -5, 5, 5

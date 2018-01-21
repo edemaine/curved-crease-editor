@@ -9,6 +9,7 @@
 
   polyline { fill: none; stroke: black; stroke-width: 0.1; stroke-linecap: round; }
   polyline.extended { stroke: green; stroke-dasharray: 0.1,0.2; }
+  .hideExtended polyline.extended { stroke: none; }
   circle.control { fill: purple; stroke: none; }
   circle.control:hover { fill: magenta; }
   circle.dragging { fill: red !important; }
@@ -21,7 +22,11 @@
   <tr>
     <td>
       <button data-mode="drag" class="mode selected">drag</button>
+      <br>
       <button data-mode="draw" class="mode">draw</button>
+      <p>
+      <input type="checkbox" id="extended" checked>
+      <label for="extended">Extensions
     <td id="canvas" style="width: 100%; height: 90vh">
 </table>
 
