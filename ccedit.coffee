@@ -208,11 +208,17 @@ gui = ->
       setWeight weight
 
   ## Settings
-  document.getElementById('extended').addEventListener 'input', ->
+  document.getElementById('extended').addEventListener 'change', ->
     if document.getElementById('extended').checked
       svg.removeClass 'hideExtended'
     else
       svg.addClass 'hideExtended'
+  document.getElementById('controls').addEventListener 'change', ->
+    console.log 'hi'
+    if document.getElementById('controls').checked
+      svg.removeClass 'hideControls'
+    else
+      svg.addClass 'hideControls'
 
   ## Render canvas
   grid = new Grid svg

@@ -15,6 +15,7 @@
   circle.control { fill: purple; stroke: none; stroke-width: 0.1; }
   circle.control.selected { stroke: purple; }
   circle.control:hover { fill: magenta; }
+  .hideControls circle.control:not(.selected) { visibility: hidden; }
   circle.dragging { fill: red !important; }
 
   line.grid { stroke: #bbbbbb; stroke-width: 0.05; stroke-linecap: round; }
@@ -37,6 +38,9 @@
       <p>
       <input type="checkbox" id="extended" checked>
       <label for="extended">Extensions</label>
+      <p>
+      <input type="checkbox" id="controls" checked>
+      <label for="controls">All controls</label>
     <td id="canvas" style="width: 100%; height: 90vh">
 </table>
 
