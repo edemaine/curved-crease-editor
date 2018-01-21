@@ -62,6 +62,7 @@ drawNewNurb = ->
   nurbDraw = new NurbCurve w: getWeight()
   nurbDraw.render svg
   nurbDraw.a = [0,0]
+  nurbDraw.select()
 
 drawMode = ->
   drawNewNurb()
@@ -110,10 +111,7 @@ class NurbCurve
     .addClass 'extended'
     @svgPath = svg.polyline()
     .click =>
-      nurbSelect @
-      for component in [@svgPath].concat @svgControls
-        component.addClass 'selected'
-        component.front()
+      @select() if getMode() == 'drag'
     @svgControls = for p, i in ['a', 'b', 'c']
       do (p) =>
         circle = svg.circle()
@@ -129,6 +127,11 @@ class NurbCurve
             @[p][1] = round point.y
             @update()
     @update()
+  select: ->
+    nurbSelect @
+    for component in [@svgPath].concat @svgControls
+      component.addClass 'selected'
+      component.front()
   update: ->
     for p, i in [@a, @b, @c]
       if p?
