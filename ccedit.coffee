@@ -17,6 +17,16 @@ setMode = (mode) ->
     when 'drag'
       dragMode()
 
+currentWeight = 1
+getWeight = -> currentWeight
+setWeight = (weight) ->
+  currentWeight = weight
+  weightText.value = weight
+  weightRange.value = weight
+  if nurbDraw?
+    nurbDraw.w = weight
+    nurbDraw.update()
+
 ### DRAG MODE ###
 
 dragMode = ->
@@ -37,7 +47,7 @@ dragStop = ->
 nurbDraw = null
 
 drawNewNurb = ->
-  nurbDraw = new NurbCurve
+  nurbDraw = new NurbCurve w: getWeight()
   nurbDraw.render svg
   nurbDraw.a = [0,0]
 
@@ -162,8 +172,25 @@ gui = ->
       e.target.classList.add 'selected'
       setMode e.target.getAttribute 'data-mode'
 
+  ## Weights
+  document.getElementById('weightRange').addEventListener 'input', ->
+    setWeight document.getElementById('weightRange').value
+  document.getElementById('weightText').addEventListener 'change', ->
+    sqrt = Math.sqrt
+    rt = Math.sqrt
+    log = Math.log
+    sin = Math.sin
+    cos = Math.cos
+    tan = Math.tan
+    asin = Math.asin
+    acos = Math.acos
+    atan = Math.atan
+    weight = eval document.getElementById('weightText').value
+    if weight != NaN
+      setWeight weight
+
   ## Settings
-  document.getElementById('extended').addEventListener 'change', ->
+  document.getElementById('extended').addEventListener 'input', ->
     if document.getElementById('extended').checked
       svg.removeClass 'hideExtended'
     else
