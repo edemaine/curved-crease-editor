@@ -23,10 +23,12 @@ deselect = ->
   nurbSelected = null
   svg.select '.selected'
   .removeClass 'selected'
+  elt.disabled = true for elt in document.querySelectorAll '.needSelected'
 nurbSelect = (nurb) ->
   deselect()
   nurbSelected = nurb
   setWeight nurb.w
+  elt.disabled = false for elt in document.querySelectorAll '.needSelected'
 
 currentWeight = 1
 getWeight = -> currentWeight
@@ -211,6 +213,21 @@ gui = ->
     weight = eval document.getElementById('weightText').value
     if weight != NaN
       setWeight weight
+
+  ## Operations
+  document.getElementById('delete').addEventListener 'click', ->
+    selected = svg.select '.selected'
+    if nurbDraw? and selected.has nurbDraw
+      nurbDraw.remove()
+      drawNewNurb()
+    else
+      nurbs =
+        for nurb in nurbs
+          if selected.has nurb.svgPath
+            nurb.remove()
+            continue
+          else
+            nurb
 
   ## Settings
   document.getElementById('extended').addEventListener 'change', ->
