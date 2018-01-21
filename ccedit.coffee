@@ -10,6 +10,7 @@ getMode = -> currentMode
 setMode = (mode) ->
   drawStop()
   dragStop()
+  deselect()
   currentMode = mode
   switch mode
     when 'draw'
@@ -26,6 +27,10 @@ setWeight = (weight) ->
   if nurbDraw?
     nurbDraw.w = weight
     nurbDraw.update()
+
+deselect = ->
+  svg.select '.selected'
+  .removeClass 'selected'
 
 ### DRAG MODE ###
 
@@ -97,6 +102,12 @@ class NurbCurve
     @svgPathExtend2 = svg.polyline()
     .addClass 'extended'
     @svgPath = svg.polyline()
+    .click =>
+      deselect()
+      for component in [@svgPath].concat @svgControls
+        component.addClass 'selected'
+        component.front()
+      setWeight @w
     @svgControls = for p, i in ['a', 'b', 'c']
       do (p) =>
         circle = svg.circle()
@@ -156,6 +167,7 @@ class Grid
 
 gui = ->
   svg = SVG 'canvas'
+  setMode getMode()  ## initialize mode
 
   ## Support dragging
   svg.on 'dragstart', (e) ->
