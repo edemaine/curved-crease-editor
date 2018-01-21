@@ -148,6 +148,8 @@ class NurbCurve
     @svgPathExtend1.remove()
     @svgPathExtend2.remove()
     control.remove() for control in @svgControls
+  toFold: ->
+    [@a, @b.concat([@w]), @c]
 
 nurbs = [
   new NurbCurve
@@ -241,6 +243,18 @@ gui = ->
       svg.removeClass 'hideControls'
     else
       svg.addClass 'hideControls'
+
+  ## Save/load
+  document.getElementById('download').addEventListener 'click', ->
+    fold = JSON.stringify
+      file_spec: 1
+      file_creator: 'CurvedCreaseEdit'
+      curves_coords:
+        for nurb in nurbs
+          nurb.toFold()
+    blob = new Blob [fold], type: 'application/json'
+    document.getElementById('downloadLink').href = URL.createObjectURL blob
+    document.getElementById('downloadLink').click()
 
   ## Render canvas
   grid = new Grid svg
