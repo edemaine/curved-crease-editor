@@ -82,6 +82,10 @@ class NurbCurve
     denom = c1 + c2 + c3
     (c1*@a[d] + c2*@b[d] + c3*(@c ? @b)[d])/denom for d in [0...@a.length]
   render: (svg) ->
+    @svgPathExtend1 = svg.polyline()
+    .addClass 'extended'
+    @svgPathExtend2 = svg.polyline()
+    .addClass 'extended'
     @svgPath = svg.polyline()
     @svgControls = for p, i in ['a', 'b', 'c']
       do (p) =>
@@ -105,6 +109,8 @@ class NurbCurve
         .show()
     if @b?
       @svgPath.plot (@sample (t/100) for t in [0..100])
+      @svgPathExtend1.plot (@sample (-10*t/200) for t in [0..200])
+      @svgPathExtend2.plot (@sample (1+10*t/200) for t in [0..200])
   remove: ->
     @svgPath.remove()
     control.remove() for control in @svgControls
