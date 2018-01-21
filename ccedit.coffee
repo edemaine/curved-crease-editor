@@ -143,6 +143,8 @@ class NurbCurve
       @svgPathExtend2.plot (@sample (1+10*t/200) for t in [0..200])
   remove: ->
     @svgPath.remove()
+    @svgPathExtend1.remove()
+    @svgPathExtend2.remove()
     control.remove() for control in @svgControls
 
 nurbs = [
