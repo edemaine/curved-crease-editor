@@ -156,10 +156,12 @@ class NurbCurve
         p = (@a[0] - @c[0] + @a[1] - @c[1])*(@a[0] - @c[0] - @a[1] + @c[1])/4 + @w*@w*((@a[1] - @b[1])*(@b[1] - @c[1]) - (@a[0] - @b[0])*(@b[0] - @c[0]))
         q = (@a[0] - @c[0])*(@a[1] - @c[1])/2 + @w*@w*(@c[0]*(@a[1] - @b[1]) - @a[0]*(@b[1] - @c[1]) - @b[0]*(@a[1] - 2*@b[1] + @c[1]))
         r = Math.sqrt(p + Math.sqrt(p*p + q*q))
+        s = Math.sqrt(-p + Math.sqrt(p*p + q*q))
+        s *= -1 if q*r < 0
         denom = Math.sqrt(2)*(1 - @w*@w)
-        d = [r/denom, (q/r)/denom]
+        d = [r/denom, s/denom]
         for sign, i in [+1, -1]
-          console.log c[0] + sign*d[0], c[1] + sign*d[1], denom, r, p, q
+          #console.log c[0] + sign*d[0], c[1] + sign*d[1], denom, r, p, q
           @svgFoci[i].show().center c[0] + sign*d[0], c[1] + sign*d[1]
       else
         focus.hide() for focus in @svgFoci
