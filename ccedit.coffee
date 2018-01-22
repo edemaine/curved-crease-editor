@@ -257,6 +257,11 @@ gui = ->
             nurb
 
   ## Settings
+  document.getElementById('snap').addEventListener 'change', ->
+    if document.getElementById('snap').checked
+      round = Math.round
+    else
+      round = (x) -> x
   document.getElementById('extended').addEventListener 'change', ->
     if document.getElementById('extended').checked
       svg.removeClass 'hideExtended'
