@@ -157,7 +157,7 @@ class NurbCurve
         q = (@a[0] - @c[0])*(@a[1] - @c[1])/2 + @w*@w*(@c[0]*(@a[1] - @b[1]) - @a[0]*(@b[1] - @c[1]) - @b[0]*(@a[1] - 2*@b[1] + @c[1]))
         r = Math.sqrt(p + Math.sqrt(p*p + q*q))
         s = Math.sqrt(-p + Math.sqrt(p*p + q*q))
-        s *= -1 if q*r < 0
+        s *= -1 if q < 0
         denom = Math.sqrt(2)*(1 - @w*@w)
         d = [r/denom, s/denom]
         for sign, i in [+1, -1]
@@ -262,7 +262,6 @@ gui = ->
     else
       svg.addClass 'hideExtended'
   document.getElementById('controls').addEventListener 'change', ->
-    console.log 'hi'
     if document.getElementById('controls').checked
       svg.removeClass 'hideControls'
     else
