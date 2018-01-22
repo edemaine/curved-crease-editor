@@ -249,7 +249,7 @@ gui = ->
   ## Save/load
   document.getElementById('download').addEventListener 'click', ->
     fold = JSON.stringify
-      file_spec: 1
+      file_spec: 2
       file_creator: 'CurvedCreaseEdit'
       curves_coords:
         for nurb in nurbs
