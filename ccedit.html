@@ -10,7 +10,7 @@
   polyline { fill: none; stroke: black; stroke-width: 0.1; stroke-linecap: round; }
   polyline.selected { stroke-width: 0.2; }
   polyline.extended { stroke: green; stroke-dasharray: 0.1,0.2; }
-  .hideExtended polyline.extended { visibility: hidden; }
+  .hideExtended polyline.extended:not(.selected) { visibility: hidden; }
 
   circle { stroke: none; stroke-width: 0.1; }
   circle.control { fill: purple; }

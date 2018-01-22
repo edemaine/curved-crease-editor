@@ -134,12 +134,15 @@ class NurbCurve
         .hide()
         .radius controlRadius
         .addClass 'focus'
+    @svgSet = [@svgPathExtend1, @svgPathExtend2, @svgPath]
+    .concat @svgControls
+    .concat @svgFoci
+    @svgSet = new SVG.Set @svgSet
     @update()
   select: ->
     nurbSelect @
-    for component in [@svgPath].concat @svgControls
-      component.addClass 'selected'
-      component.front()
+    @svgSet.addClass 'selected'
+    @svgSet.front()
   update: ->
     for p, i in [@a, @b, @c]
       if p?
@@ -166,11 +169,8 @@ class NurbCurve
       else
         focus.hide() for focus in @svgFoci
   remove: ->
-    @svgPath.remove()
-    @svgPathExtend1.remove()
-    @svgPathExtend2.remove()
-    control.remove() for control in @svgControls
-    focus.remove() for focus in @foci
+    @svgSet.each -> @remove()
+    @svgSet.clear()
   coords: ->
     [@a, @b, @c]
   weights: ->
