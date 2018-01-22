@@ -296,6 +296,15 @@ gui = ->
     document.getElementById('downloadLink').href = URL.createObjectURL blob
     document.getElementById('downloadLink').click()
 
+  ## Keyboard shortcuts
+  document.addEventListener 'keydown', (event) ->
+    return unless document.activeElement == document.body
+    switch event.key
+      when 'Backspace', 'Delete'
+        document.getElementById('delete').click()
+      when 'Escape'
+        setMode getMode()
+
   ## Render canvas
   grid = new Grid svg
   grid.draw -5, -5, 5, 5
