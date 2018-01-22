@@ -170,6 +170,7 @@ class NurbCurve
     @svgPathExtend1.remove()
     @svgPathExtend2.remove()
     control.remove() for control in @svgControls
+    focus.remove() for focus in @foci
   coords: ->
     [@a, @b, @c]
   weights: ->
