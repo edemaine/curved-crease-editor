@@ -153,7 +153,7 @@ class NurbCurve
       @svgPathExtend1.plot (@sample (-10*t/200) for t in [0..200])
       @svgPathExtend2.plot (@sample (1+10*t/200) for t in [0..200])
     if @c?
-      if @w != 1
+      if Math.abs(@w - 1) > 0.0000001
         c = [(@a[0] - 2*@w*@w*@b[0] + @c[0])/(2*(1 - @w*@w))
              (@a[1] - 2*@w*@w*@b[1] + @c[1])/(2*(1 - @w*@w))]
         p = (@a[0] - @c[0] + @a[1] - @c[1])*(@a[0] - @c[0] - @a[1] + @c[1])/4 + @w*@w*((@a[1] - @b[1])*(@b[1] - @c[1]) - (@a[0] - @b[0])*(@b[0] - @c[0]))
@@ -167,7 +167,15 @@ class NurbCurve
           #console.log c[0] + sign*d[0], c[1] + sign*d[1], denom, r, p, q
           @svgFoci[i].show().center c[0] + sign*d[0], c[1] + sign*d[1]
       else
-        focus.hide() for focus in @svgFoci
+        s = (@a[0] + @c[0] - 2*@b[0])**2 +
+            (@a[1] + @c[1] - 2*@b[1])**2
+        l1 = @a[0]*@a[0] + @a[1]*@a[1]
+        l2 = @b[0]*@b[0] + @b[1]*@b[1]
+        l3 = @c[0]*@c[0] + @c[1]*@c[1]
+        fx = @a[0]*l3 + @c[0]*l1 + (@a[0] + @c[0])*(@b[1]*@b[1] - @b[0]*@b[0]) + 2*(@b[0]*(l2 + @a[1]*@c[1] - @a[0]*@c[0]) - @b[1]*(@a[0]*@c[1] + @c[0]*@a[1] + @b[0]*(@a[1] + @c[1])))
+        fy = @a[1]*l3 + @c[1]*l1 + (@a[1] + @c[1])*(@b[0]*@b[0] - @b[1]*@b[1]) + 2*(@b[1]*(l2 + @a[0]*@c[0] - @a[1]*@c[1]) - @b[0]*(@a[1]*@c[0] + @c[1]*@a[0] + @b[1]*(@a[0] + @c[0])))
+        @svgFoci[0].show().center fx/s, fy/s
+        @svgFoci[1].hide()
   remove: ->
     @svgSet.each -> @remove()
     @svgSet.clear()
