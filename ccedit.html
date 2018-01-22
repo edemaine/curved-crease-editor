@@ -12,11 +12,13 @@
   polyline.extended { stroke: green; stroke-dasharray: 0.1,0.2; }
   .hideExtended polyline.extended { visibility: hidden; }
 
-  circle.control { fill: purple; stroke: none; stroke-width: 0.1; }
+  circle { stroke: none; stroke-width: 0.1; }
+  circle.control { fill: purple; }
   circle.control.selected { stroke: purple; }
   circle.control:hover { fill: magenta; }
   .hideControls circle.control:not(.selected) { visibility: hidden; }
   circle.dragging { fill: red !important; }
+  circle.focus { fill: cyan; }
 
   line.grid { stroke: #bbbbbb; stroke-width: 0.05; stroke-linecap: round; }
 </style>

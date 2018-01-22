@@ -128,6 +128,12 @@ class NurbCurve
             @[p][0] = round point.x
             @[p][1] = round point.y
             @update()
+    @svgFoci = for i in [0, 1]
+      do (i) =>
+        circle = svg.circle()
+        .hide()
+        .radius controlRadius
+        .addClass 'focus'
     @update()
   select: ->
     nurbSelect @
@@ -143,6 +149,20 @@ class NurbCurve
       @svgPath.plot (@sample (t/100) for t in [0..100])
       @svgPathExtend1.plot (@sample (-10*t/200) for t in [0..200])
       @svgPathExtend2.plot (@sample (1+10*t/200) for t in [0..200])
+    if @c?
+      if @w != 1
+        c = [(@a[0] - 2*@w*@w*@b[0] + @c[0])/(2*(1 - @w*@w))
+             (@a[1] - 2*@w*@w*@b[1] + @c[1])/(2*(1 - @w*@w))]
+        p = (@a[0] - @c[0] + @a[1] - @c[1])*(@a[0] - @c[0] - @a[1] + @c[1])/4 + @w*@w*((@a[1] - @b[1])*(@b[1] - @c[1]) - (@a[0] - @b[0])*(@b[0] - @c[0]))
+        q = (@a[0] - @c[0])*(@a[1] - @c[1])/2 + @w*@w*(@c[0]*(@a[1] - @b[1]) - @a[0]*(@b[1] - @c[1]) - @b[0]*(@a[1] - 2*@b[1] + @c[1]))
+        r = Math.sqrt(p + Math.sqrt(p*p + q*q))
+        denom = Math.sqrt(2)*(1 - @w*@w)
+        d = [r/denom, (q/r)/denom]
+        for sign, i in [+1, -1]
+          console.log c[0] + sign*d[0], c[1] + sign*d[1], denom, r, p, q
+          @svgFoci[i].show().center c[0] + sign*d[0], c[1] + sign*d[1]
+      else
+        focus.hide() for focus in @svgFoci
   remove: ->
     @svgPath.remove()
     @svgPathExtend1.remove()
