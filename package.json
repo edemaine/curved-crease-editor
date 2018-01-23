@@ -1,0 +1,28 @@
+{
+  "name": "curved-crease-editor",
+  "version": "0.0.0",
+  "description": "Curved crease pattern drawing program",
+  "dependencies": {
+    "svgjs": "^2.6.2"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.12.7"
+  },
+  "scripts": {
+    "prepare": "coffee -o . -c .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edemaine/curved-crease-editor.git"
+  },
+  "keywords": [
+    "origami"
+  ],
+  "author": "Erik Demaine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/edemaine/curved-crease-editor/issues"
+  },
+  "homepage": "https://github.com/edemaine/curved-crease-editor#readme"
+}
